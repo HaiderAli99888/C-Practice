@@ -1,50 +1,41 @@
 ﻿using System;
+using System.Reflection.Metadata.Ecma335;
 using System.IO;
+using System.Runtime.Serialization;
 
-namespace CustomExceptionExample
+class program
 {
-    class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
+        Console.WriteLine("Please enter the numerator: ");
+        int Numerator;
+        bool IsNumeratorSuccessfull = int.TryParse(Console.ReadLine(), out Numerator);
+        if (IsNumeratorSuccessfull)
         {
-            try
+            Console.WriteLine("Please enter the Denominator: ");
+            int Denominator;
+            bool IsDenominatorSuccessfull = int.TryParse(Console.ReadLine(), out Denominator);
+            if (IsDenominatorSuccessfull && Denominator != 0)
             {
-                try
-                {
-                    Console.WriteLine("Please enter first number: ");
-                    int FN = Convert.ToInt32(Console.ReadLine());
-                    Console.WriteLine("Please enter second number: ");
-                    int SN = Convert.ToInt32(Console.ReadLine());
-
-                    int Result = FN / SN;
-                    Console.WriteLine("Result = {0}", Result);
-                }
-                catch (Exception ex)
-                {
-                    string filePath = @"C:\samplefiles\9log.txt";
-                    if (File.Exists(filePath))
-                    {
-                        StreamWriter sw = new StreamWriter(filePath);
-                        sw.WriteLine(ex.GetType().Name);
-                        sw.WriteLine(ex.Message);
-                        Console.WriteLine("There is a problem, please try later");
-                    }
-                    else
-                    {
-                        throw new FileNotFoundException(filePath + " not found", ex);
-                    }
-                }
+                int result = Numerator / Denominator;
+                Console.WriteLine(result);
             }
-            catch (Exception ep)
+            else
             {
-
-                Console.WriteLine("Current Exception = {0}", ep.GetType().Name);
-                if (ep.InnerException != null)
+                if (Denominator == 0)
                 {
-                    Console.WriteLine("Inner Exception = {0}", ep.InnerException.GetType().Name);
+                    Console.WriteLine("Denominator cannot be 0");
+                }
+                else
+                {
+                    Console.WriteLine("Please enter a valid number between {0} and {1}", Int32.MinValue, Int32.MaxValue);
                 }
             }
         }
+        else
+        {
+            Console.WriteLine("Please enter a valid number between {0} and {1}", Int32.MinValue, Int32.MaxValue);
+        }
     }
-}
 
+}
