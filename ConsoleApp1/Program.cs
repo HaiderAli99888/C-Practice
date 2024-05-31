@@ -20,17 +20,12 @@ class program
                 int result = Numerator / Denominator;
                 Console.WriteLine(result);
             }
-            else
-            {
-                if (Denominator == 0)
-                {
-                    Console.WriteLine("Denominator cannot be 0");
-                }
-                else
+            else if(Denominator == 0 || !IsNumeratorSuccessfull)
                 {
                     Console.WriteLine("Please enter a valid number between {0} and {1}", Int32.MinValue, Int32.MaxValue);
                 }
-            }
+                
+            
         }
         else
         {
