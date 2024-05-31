@@ -1,63 +1,50 @@
 ﻿using System;
+using System.IO;
 
-namespace HelloWorld
+namespace CustomExceptionExample
 {
-
     class Program
     {
-
         static void Main(string[] args)
         {
-            string userChoice;
-            string againChoice;
-            int totalPrice = 0;
-            do
+            try
             {
-               
-                do
+                try
                 {
-                    Console.Write("Please enter coffee size, Sir, : 1 for Small, 2 for Medium, 3 for Large: ");
-                    userChoice = (Console.ReadLine());
+                    Console.WriteLine("Please enter first number: ");
+                    int FN = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Please enter second number: ");
+                    int SN = Convert.ToInt32(Console.ReadLine());
 
-                    switch (userChoice)
+                    int Result = FN / SN;
+                    Console.WriteLine("Result = {0}", Result);
+                }
+                catch (Exception ex)
+                {
+                    string filePath = @"C:\samplefiles\9log.txt";
+                    if (File.Exists(filePath))
                     {
-                        case "1":
-                            totalPrice = totalPrice + 1;
-                            break;
-                        case "2":
-                            totalPrice = totalPrice + 2;
-                            break;
-                        case "3":
-                            totalPrice = totalPrice + 3;
-                            break;
-                        default:
-                            Console.WriteLine("Please enter a valid size");
-                            break;
+                        StreamWriter sw = new StreamWriter(filePath);
+                        sw.WriteLine(ex.GetType().Name);
+                        sw.WriteLine(ex.Message);
+                        Console.WriteLine("There is a problem, please try later");
+                    }
+                    else
+                    {
+                        throw new FileNotFoundException(filePath + " not found", ex);
                     }
                 }
-                while (userChoice != "1" && userChoice != "2" && userChoice != "3");
-
-                do {
-                    Console.WriteLine("Do you want another coffee? ");
-                    againChoice = Console.ReadLine().ToUpper();
-                    switch (againChoice)
-                    {
-                        case "YES":
-                            break;
-                        case "NO":
-                            break;
-                        default:
-                            Console.WriteLine("Invalid choice");
-                            break;
-
-                    }
-                   
-                }
-                while(againChoice!="YES" && againChoice != "NO");
-           
             }
-            while (againChoice != "NO");
-            Console.WriteLine("Total cost is {0}$", totalPrice);
+            catch (Exception ep)
+            {
+
+                Console.WriteLine("Current Exception = {0}", ep.GetType().Name);
+                if (ep.InnerException != null)
+                {
+                    Console.WriteLine("Inner Exception = {0}", ep.InnerException.GetType().Name);
+                }
+            }
         }
     }
 }
+
