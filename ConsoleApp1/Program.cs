@@ -1,36 +1,45 @@
 ﻿using System;
-using System.Reflection.Metadata.Ecma335;
+using System.Diagnostics;
 using System.IO;
-using System.Runtime.Serialization;
+using System.Security.Cryptography.X509Certificates;
+using Microsoft.VisualBasic;
 
-class program
-{
+class Program
+    {
     static void Main(string[] args)
     {
-        Console.WriteLine("Please enter the numerator: ");
-        int Numerator;
-        bool IsNumeratorSuccessfull = int.TryParse(Console.ReadLine(), out Numerator);
-        if (IsNumeratorSuccessfull)
+        Customer[] customer = new Customer[3];
+        customer[0] = new Customer { Name= "Mark", Gender= Gender.Male};
+        customer[1] = new Customer { Name = "Mary", Gender = Gender.Female };
+        customer[2] = new Customer { Name = "Sam", Gender = Gender.Unknown };
+        foreach(Customer cust in customer)
         {
-            Console.WriteLine("Please enter the Denominator: ");
-            int Denominator;
-            bool IsDenominatorSuccessfull = int.TryParse(Console.ReadLine(), out Denominator);
-            if (IsDenominatorSuccessfull && Denominator != 0)
-            {
-                int result = Numerator / Denominator;
-                Console.WriteLine(result);
-            }
-            else if(Denominator == 0 || !IsNumeratorSuccessfull)
-                {
-                    Console.WriteLine("Please enter a valid number between {0} and {1}", Int32.MinValue, Int32.MaxValue);
-                }
-                
-            
-        }
-        else
-        {
-            Console.WriteLine("Please enter a valid number between {0} and {1}", Int32.MinValue, Int32.MaxValue);
+            Console.WriteLine("Name = {0} and Gender = {1}",cust.Name,GenderConverter(cust.Gender));
         }
     }
-
+    public static string GenderConverter(Gender gender) 
+    {
+        switch (gender)
+        {
+            case Gender.Male:
+                return "male";
+                case Gender.Female:
+                return "Female";
+                case Gender.Unknown:
+                return "unknown";
+            default:
+                return "invalid";
+        }
+    }
+}
+public enum Gender
+{
+    Unknown,
+    Male,
+    Female
+}
+public class Customer
+{
+    public string Name { get; set; }
+    public Gender Gender {  get; set; }
 }
