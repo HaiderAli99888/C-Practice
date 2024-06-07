@@ -11,7 +11,7 @@ namespace Haider
             {
                 ID = 121,
                 Name = "Ali",
-                Salary = 3000
+                Salary = 5000
             };
 
             Customr customer2 = new Customr()
@@ -28,18 +28,15 @@ namespace Haider
                 Salary = 3500
             };
 
-            Dictionary<int, Customr> dictionaryCustomers = new Dictionary<int, Customr>();
-            dictionaryCustomers.Add(customer1.ID, customer1);
-            dictionaryCustomers.Add(customer2.ID, customer2);
-            dictionaryCustomers.Add(customer3.ID, customer3);
-
-
-            foreach (KeyValuePair<int, Customr> customerKeyValuePair in dictionaryCustomers)
+            Customr[] cus = new Customr[3];
+                cus[0] = customer1;
+            cus[1]= customer2;
+            cus[2]= customer3;
+            Dictionary<int, Customr> diss = cus.ToDictionary(cust => cust.ID, cust => cust);
+            foreach(KeyValuePair<int, Customr> kvp in diss)
             {
-                Console.WriteLine("Key = {0}", customerKeyValuePair.Key);
-                Customr cust = customerKeyValuePair.Value;
-                Console.WriteLine("ID = {0}, Name = {1}, Salary = {2}", cust.ID, cust.Name, cust.Salary);
-                Console.WriteLine("--------------------------------");
+                Customr info = kvp.Value;
+                Console.WriteLine(info.Name);
             }
         }
     }
