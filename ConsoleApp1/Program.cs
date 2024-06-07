@@ -1,63 +1,53 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace HelloWorld
+namespace Haider
 {
-
     class Program
     {
-
-        static void Main(string[] args)
+        public static void Main()
         {
-            string userChoice;
-            string againChoice;
-            int totalPrice = 0;
-            do
+            Customr customer1 = new Customr()
             {
-               
-                do
-                {
-                    Console.Write("Please enter coffee size, Sir, : 1 for Small, 2 for Medium, 3 for Large: ");
-                    userChoice = (Console.ReadLine());
+                ID = 121,
+                Name = "Ali",
+                Salary = 3000
+            };
 
-                    switch (userChoice)
-                    {
-                        case "1":
-                            totalPrice = totalPrice + 1;
-                            break;
-                        case "2":
-                            totalPrice = totalPrice + 2;
-                            break;
-                        case "3":
-                            totalPrice = totalPrice + 3;
-                            break;
-                        default:
-                            Console.WriteLine("Please enter a valid size");
-                            break;
-                    }
-                }
-                while (userChoice != "1" && userChoice != "2" && userChoice != "3");
+            Customr customer2 = new Customr()
+            {
+                ID = 140,
+                Name = "Ahmed",
+                Salary = 4500
+            };
 
-                do {
-                    Console.WriteLine("Do you want another coffee? ");
-                    againChoice = Console.ReadLine().ToUpper();
-                    switch (againChoice)
-                    {
-                        case "YES":
-                            break;
-                        case "NO":
-                            break;
-                        default:
-                            Console.WriteLine("Invalid choice");
-                            break;
+            Customr customer3 = new Customr()
+            {
+                ID = 119,
+                Name = "Mili",
+                Salary = 3500
+            };
 
-                    }
-                   
-                }
-                while(againChoice!="YES" && againChoice != "NO");
-           
+            Dictionary<int, Customr> dictionaryCustomers = new Dictionary<int, Customr>();
+            dictionaryCustomers.Add(customer1.ID, customer1);
+            dictionaryCustomers.Add(customer2.ID, customer2);
+            dictionaryCustomers.Add(customer3.ID, customer3);
+
+
+            foreach (KeyValuePair<int, Customr> customerKeyValuePair in dictionaryCustomers)
+            {
+                Console.WriteLine("Key = {0}", customerKeyValuePair.Key);
+                Customr cust = customerKeyValuePair.Value;
+                Console.WriteLine("ID = {0}, Name = {1}, Salary = {2}", cust.ID, cust.Name, cust.Salary);
+                Console.WriteLine("--------------------------------");
             }
-            while (againChoice != "NO");
-            Console.WriteLine("Total cost is {0}$", totalPrice);
         }
+    }
+
+    public class Customr
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public int Salary { get; set; }
     }
 }
