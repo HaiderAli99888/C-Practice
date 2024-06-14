@@ -1,97 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
+using System;
+using System.Threading;
 
-namespace Haider
+namespace MyFirstProgram
 {
+    public delegate void CallBackDelegate(int sum);
     class Program
     {
-        public static void Main()
+        public static void Print (int sum)
         {
-            Customr customer1 = new Customr()
-            {
-                ID = 121,
-                Name = "Ali",
-                Salary = 5500
-            };
-
-            Customr customer2 = new Customr()
-            {
-                ID = 130,
-                Name = "Ahmed",
-                Salary = 6500
-            };
-
-            Customr customer3 = new Customr()
-            {
-                ID = 119,
-                Name = "Mili",
-                Salary = 4500
-            };
-        
-            List<Customr> customerList = new List<Customr>();
-            customerList.Add(customer1);
-            customerList.Add(customer2);
-            customerList.Add(customer3);
-            Console.WriteLine("BEFORE SORT");
-            foreach (Customr cust in customerList)
-            {
-                Console.WriteLine(cust.ID);
-            }
-            customerList.Sort();
-            Console.WriteLine("AFTER SORT");
-            foreach (Customr cust in customerList)
-            {
-                Console.WriteLine(cust.ID);
-            }
-          
-            Console.WriteLine("bEFORE NAME SORTING");
-            foreach (Customr cust in customerList)
-            {
-                Console.WriteLine(cust.Name);
-            }
-            Console.WriteLine("aFTER NAME SORTING");
-
-            SortByName byName = new SortByName();
-            customerList.Sort(byName);
-            foreach (Customr cust in customerList)
-            {
-                Console.WriteLine(cust.Name);
-            }
-            Console.WriteLine("bEFORE NAME SORTING WITHOUT USING DELEGAT");
-            foreach (Customr cust in customerList)
-            {
-                Console.WriteLine(cust.Salary);
-            }
-            customerList.Sort((x,y)=>x.Salary.CompareTo(y.Salary));
-            Console.WriteLine("aFTER NAME SORTING USING DELEGATE");
-
-            foreach (Customr cust in customerList)
-            {
-                Console.WriteLine(cust.Salary);
-            }
-
-
+            Console.WriteLine("Sum is {0}",sum);
         }
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Please enter a number");
+            int target= int.Parse(Console.ReadLine());
+            CallBackDelegate callBack = new CallBackDelegate(Print);
+            Number number= new Number(target,callBack);
+            Thread newThread= new Thread(number.Nothing) ;
+            newThread.Start();
+        }
+       
     }
-
-    public class SortByName : IComparer<Customr>
-    {   
-        public int Compare(Customr x, Customr y)
-            {
-                return x.Name.CompareTo(y.Name);
-            }
-          
-    }
-    public class Customr:IComparable<Customr>
+    class Number
     {
-        public int ID { get; set; }
-        public string Name { get; set; }
-        public int Salary { get; set; }
-        public int CompareTo(Customr other)
+         int _target;
+        CallBackDelegate _callBackDelegate; 
+
+        public Number(int target, CallBackDelegate callBackDelegate)
         {
-            return this.ID.CompareTo(other.ID);
+            this._target = target;
+            this._callBackDelegate = callBackDelegate;
+        }
+        public void Nothing()
+        {
+            int sum = 0;
+           for (int i = 0; i <= _target; i++)
+             {
+                sum = sum + i;
+            }
+           if ( _callBackDelegate != null )
+             _callBackDelegate(sum);
+            
+            
         }
     }
-   
-
 }
