@@ -1,48 +1,103 @@
-﻿
-using System;
+﻿using System;
 using System.Threading;
 
-namespace MyFirstProgram
+public class Program
 {
-    public delegate void CallBackDelegate(int sum);
-    class Program
+    public static void Main()
     {
-        public static void Print (int sum)
-        {
-            Console.WriteLine("Sum is {0}",sum);
-        }
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Please enter a number");
-            int target= int.Parse(Console.ReadLine());
-            CallBackDelegate callBack = new CallBackDelegate(Print);
-            Number number= new Number(target,callBack);
-            Thread newThread= new Thread(number.Nothing) ;
-            newThread.Start();
-        }
-       
-    }
-    class Number
-    {
-         int _target;
-        CallBackDelegate _callBackDelegate; 
+        Console.WriteLine("Main Started");
+        Account accountA = new Account(101, 5000);
+        Account accountB = new Account(102, 3000);
 
-        public Number(int target, CallBackDelegate callBackDelegate)
+        AccountManager accountManagerA = new AccountManager(accountA, accountB, 1000);
+        Thread T1 = new Thread(accountManagerA.Transfer);
+        T1.Name = "T1";
+
+        AccountManager accountManagerB = new AccountManager(accountB, accountA, 2000);
+        Thread T2 = new Thread(accountManagerB.Transfer);
+        T2.Name = "T2";
+
+        T1.Start();
+        T2.Start();
+
+        T1.Join();
+        T2.Join();
+
+        Console.WriteLine("Main Completed");
+    }
+}
+
+public class Account
+{
+    double _balance;
+    int _id;
+
+    public Account(int id, double balance)
+    {
+        this._id = id;
+        this._balance = balance;
+    }
+
+    public int ID
+    {
+        get { return _id; }
+    }
+
+    public void Withdraw(double amount)
+    {
+        _balance = _balance-amount;
+    }
+
+    public void Deposit(double amount)
+    {
+        _balance = _balance - amount;
+    }
+}
+public class AccountManager
+{
+    Account _fromAccount;
+    Account _toAccount;
+    double _amountToTransfer;
+
+    public AccountManager(Account fromAccount, Account toAccount, double amountToTransfer)
+    {
+        this._fromAccount = fromAccount;
+        this._toAccount = toAccount;
+        this._amountToTransfer = amountToTransfer;
+    }
+
+    public void Transfer()
+    {
+        object _lock1, _lock2;
+
+        if (_fromAccount.ID < _toAccount.ID)
         {
-            this._target = target;
-            this._callBackDelegate = callBackDelegate;
+            _lock1 = _fromAccount;
+            _lock2 = _toAccount;
         }
-        public void Nothing()
+        else
         {
-            int sum = 0;
-           for (int i = 0; i <= _target; i++)
-             {
-                sum = sum + i;
+            _lock1 = _toAccount;
+            _lock2 = _fromAccount;
+        }
+
+        Console.WriteLine(Thread.CurrentThread.Name + " trying to acquire lock on " + ((Account)_lock1).ID.ToString());
+
+        lock (_lock1)
+        {
+            Console.WriteLine(Thread.CurrentThread.Name + " acquired lock on " + ((Account)_lock1).ID.ToString());
+            Console.WriteLine(Thread.CurrentThread.Name + " suspended for 1 second");
+            Thread.Sleep(1000);
+            Console.WriteLine(Thread.CurrentThread.Name + " back in action and trying to acquire lock on " + ((Account)_lock2).ID.ToString());
+
+            lock (_lock2)
+            {
+                Console.WriteLine(Thread.CurrentThread.Name + " acquired lock on " + ((Account)_lock2).ID.ToString());
+                _fromAccount.Withdraw(_amountToTransfer);
+                _toAccount.Deposit(_amountToTransfer);
+                Console.WriteLine(Thread.CurrentThread.Name + " Transferred " + _amountToTransfer.ToString() + " from " + _fromAccount.ID + " to " + _toAccount.ID);
             }
-           if ( _callBackDelegate != null )
-             _callBackDelegate(sum);
-            
-            
         }
     }
 }
+
